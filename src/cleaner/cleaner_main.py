@@ -89,7 +89,7 @@ def main():
     common.setup_logging()
 
     cleaner = Cleaner("docker-cleaner-healthy")
-    cleaner.add_worker(args.option, get_worker(args.threshold))
+    cleaner.add_worker("docker-cleaner", get_worker(args.threshold))
     cleaner.start()
     cleaner.sync()
 
