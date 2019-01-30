@@ -38,17 +38,17 @@ def check_disk_usage(partition):
 
 
 def check_and_clean(threshold):
-    if check_disk_usage("/var/lib/docker") > threshold:
-        print("Disk usage > %d, Try to use prune to free disk space", threshold)
+    if check_disk_usage("/var/lib/docker") > int(threshold):
+        logger.info("Disk usage > {0}, Try to remove containers".format(threshold))
         if kill_largest_container():
             check_and_clean(threshold)
 
 
 # Clean logic v1: kill largest container
-white_list = ["k8s_kube", "k8s_pylon", "k8s_zookeeper", "k8s_rest-server", "k8s_yarn", "k8s_hadoop", "k8s_job-exporter", "k8s_watchdog", "k8s_grafana", "k8s_node-exporter", "k8s_webportal", "k8s_prometheus", "k8s_nvidia-drivers", "k8s_etcd-container", "k8s_apiserver-container", "kubelet"]
+white_list = ["k8s_kube", "k8s_pylon", "k8s_zookeeper", "k8s_rest-server", "k8s_yarn", "k8s_hadoop", "k8s_job-exporter", "k8s_watchdog", "k8s_grafana", "k8s_node-exporter", "k8s_webportal", "k8s_prometheus", "k8s_nvidia-drivers", "k8s_etcd-container", "k8s_apiserver-container", "k8s_docker-cleaner", "kubelet"]
 def kill_largest_container():
     containers = []
-    # Only try to kill PAI jobs
+    # Only try to stop PAI jobs and user created containers
     containers_source = subprocess.Popen(["docker", "ps", "-a", "--format", r'{{.ID}}\t{{.Image}}\t{{.Size}}\t{{.Names}}'], stdout=subprocess.PIPE)
     for line in containers_source.stdout:
         splitline = line.split("\t")
@@ -64,14 +64,12 @@ def kill_largest_container():
     containers.sort(key=lambda x:x[0], reverse=True)
 
     if containers.count > 0 and containers[0][0] > 1024**3:
-        logger.warning("Kill contain %s due to disk pressure. Container size: %f", containers[0][1], containers[0][0])
-
-        container_image = subprocess.Popen(["docker", "inspect", containers[0][1], r"--format='{{.Image}}'"], stdout=subprocess.PIPE).stdout.readline()
+        logger.warning("Kill container {0} due to disk pressure. Container size: {1}".format(containers[0][1], containers[0][0]))
         subprocess.Popen(["docker", "container", "stop", containers[0][1]])
-        subprocess.Popen(["docker", "container", "rm", containers[0][1]])
-        #remove image, use sha instead of image repo
-        subprocess.Popen(["docker", "image", "rmi", container_image])
 
+        # Because docker stop will not immedicately stop container, we can not remove docker image right after stop container
+        #container_image = subprocess.Popen(["docker", "inspect", containers[0][1], r"--format='{{.Image}}'"], stdout=subprocess.PIPE).stdout.readline()
+        #subprocess.Popen(["docker", "image", "rmi", container_image])
         return True
     else:
         return False
@@ -79,7 +77,7 @@ def kill_largest_container():
 size_defs={'B':1, 'K':1024, 'M':1024**2, 'G':1024**3, 'T':1024**4, 'b':1, 'k':1024, 'm':1024**2, 'g':1024**3, 't':1024**4}
 def calculate_size(size_str):
     size_search = re.search(r"[BbKkMmGgTt]", size_str)
-    return float(size_defs[0:size_search.start()]) * size_defs[size_search.group()]
+    return float(size_str[0:size_search.start()]) * size_defs[size_search.group()]
 
 
 if __name__ == "__main__":

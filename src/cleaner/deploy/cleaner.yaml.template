@@ -34,7 +34,8 @@ spec:
       - name: docker-cleaner
         image: {{ cluster_cfg["cluster"]["docker-registry"]["prefix"] }}cleaner:{{ cluster_cfg["cluster"]["docker-registry"]["tag"] }}
         args:
-        - '-t 40'
+        - '-t'
+		- {{ cluster_cfg["cleaner"]["threshold"] }}
         imagePullPolicy: Always
         securityContext:
           privileged: True
@@ -43,12 +44,6 @@ spec:
           name: docker-socket
         - mountPath: /var/lib/docker
           name: docker-path
-        livenessProbe:
-          exec:
-            command:
-            - 'find /tmp/docker-cleaner-healthy -mmin -1'
-          initialDelaySeconds: 60
-          periodSeconds: 30
         {%- if cluster_cfg['cluster']['common']['qos-switch'] == "true" %}
         resources:
           limits:
@@ -62,5 +57,5 @@ spec:
           path: /var/run/docker.sock
       - name: docker-path
         hostPath:
-          path: /var/lib/docker
+          path: {{ cluster_cfg["cleaner"]["docker-path"] }}
           type: Directory

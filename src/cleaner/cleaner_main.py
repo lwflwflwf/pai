@@ -77,7 +77,7 @@ class Cleaner(LoggerMixin):
 
 
 def get_worker(threshold):
-    worker = Worker(clean_docker.check_and_clean, threshold, timeout=timedelta(minutes=10), cool_down_time=1800)
+    worker = Worker(clean_docker.check_and_clean, threshold, timeout=timedelta(minutes=10), cool_down_time=300)
     return worker;
 
 
