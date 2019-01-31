@@ -34,8 +34,7 @@ spec:
       - name: docker-cleaner
         image: {{ cluster_cfg["cluster"]["docker-registry"]["prefix"] }}cleaner:{{ cluster_cfg["cluster"]["docker-registry"]["tag"] }}
         args:
-        - '-t'
-        - {{ cluster_cfg["cleaner"]["threshold"] }}
+        - -t {{ cluster_cfg["cleaner"]["threshold"] }}
         imagePullPolicy: Always
         securityContext:
           privileged: True
