@@ -34,15 +34,14 @@ def check_disk_usage(partition):
     except ValueError:
         logger.error("cannot get disk size, reset size to 0")
         size = 0
-    logger.info("Checking disk, disk usage = {0}".format(size))
+    logger.info("Checking disk, disk usage = {0}%".format(size))
     return size
 
 
 def check_and_clean(threshold):
     if check_disk_usage("/") > int(threshold):
-        logger.info("Disk usage > {0}, Try to remove containers".format(threshold))
-        if kill_largest_container():
-            check_and_clean(threshold)
+        logger.info("Disk usage is above {0}%, Try to remove containers".format(threshold))
+        kill_largest_container()
 
 
 # Clean logic v1: kill largest container
