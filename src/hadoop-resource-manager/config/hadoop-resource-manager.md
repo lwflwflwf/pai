@@ -35,6 +35,7 @@ hadoop-resource-manager:
         capacity: 100
     
     yarn_exporter_port: 9459
+    yarn_log_retain_seconds: 2592000
 ```
 
 
@@ -69,6 +70,12 @@ hadoop-resource-manager:
     <td>hadoop-resource-manager.yarn_exporter_port</td>
     <td>com["hadoop-resource-manager"]["yarn_exporter_port"]</td>
     <td>cluster_cfg["hadoop-resource-manager"]["yarn_exporter_port"]</td>
+    <td>Int</td>
+</tr>
+<tr>
+    <td>hadoop-resource-manager.yarn_log_retain_seconds</td>
+    <td>com["hadoop-resource-manager"]["yarn_log_retain_seconds"]</td>
+    <td>cluster_cfg["hadoop-resource-manager"]["yarn_log_retain_seconds"]</td>
     <td>Int</td>
 </tr>
 </table>

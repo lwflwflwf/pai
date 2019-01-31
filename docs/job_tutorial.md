@@ -123,6 +123,7 @@ Below please find the detailed explanation for each of the parameters in the con
 | `gpuType`                        | String, optional           | Specify the GPU type to be used in the tasks. If omitted, the job will run on any gpu type |
 | `retryCount`                     | Integer, optional          | Job retry count, no less than 0          |
 | `jobEnvs`                        | Object, optional           | Job env parameters, key-value pairs, available in job container and **no substitution allowed** |
+| `jobEnvs.paiAzRDMA`                        | Boolean, optional           | If you cluster is azure rdma capable, you could specify the parameter to make your container azure rdma capable. How to use azure rdma? Please follow this [job example](../examples/azure-rdma-inte-mpi-benchmark-with-horovod-image) |
 
 For more details on explanation, please refer to [frameworklauncher usermanual](../subprojects/frameworklauncher/yarn/doc/USERMANUAL.md).
 
@@ -161,7 +162,7 @@ Below we show a complete list of environment variables accessible in a Docker co
 | PAI_USER_NAME                      | User who submit the job                  |
 | PAI_DATA_DIR                       | `dataDir` in config file                 |
 | PAI_OUTPUT_DIR                     | `outputDir`in config file or the generated path if `outputDir` is not specified |
-| PAI_CODE_DIR                       | `codeDir` in config file. **Note**: we plan to obsolete PAI_CODE_DIR soon. Users are encouraged to keep their code in Github or any privately managed code repo if the code is not public. When running the Docker image, user can insert some script in the taskRole.command to “git clone …” the code down to the Docker instance.                  |
+| PAI_CODE_DIR                       | `codeDir` in config file. **Note**: we plan to obsolete PAI_CODE_DIR soon. Users are encouraged to keep their code in Github or any privately managed code repo if the code is not public. When running the Docker image,user can insert some script in the taskRole.command to “git clone …” the code down to the Docker instance.                 |
 | PAI_CURRENT_TASK_ROLE_NAME         | `taskRole.name` of current task role     |
 | PAI_CURRENT_TASK_ROLE_TASK_COUNT   | `taskRole.taskNumber` of current task role |
 | PAI_CURRENT_TASK_ROLE_CPU_COUNT    | `taskRole.cpuNumber` of current task role  |
