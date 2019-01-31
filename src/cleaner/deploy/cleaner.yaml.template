@@ -42,8 +42,6 @@ spec:
         volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker-socket
-        - mountPath: /var/lib/docker
-          name: docker-path
         {%- if cluster_cfg['cluster']['common']['qos-switch'] == "true" %}
         resources:
           limits:
@@ -55,7 +53,8 @@ spec:
       - name: docker-socket
         hostPath:
           path: /var/run/docker.sock
-      - name: docker-path
-        hostPath:
-          path: {{ cluster_cfg["cleaner"]["docker-path"] }}
-          type: Directory
+      tolerations:
+      - key: node.kubernetes.io/memory-pressure
+        operator: "Exists"
+      - key: node.kubernetes.io/disk-pressure
+        operator: "Exists"

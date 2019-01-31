@@ -38,7 +38,7 @@ def check_disk_usage(partition):
 
 
 def check_and_clean(threshold):
-    if check_disk_usage("/var/lib/docker") > int(threshold):
+    if check_disk_usage(".") > int(threshold):
         logger.info("Disk usage > {0}, Try to remove containers".format(threshold))
         if kill_largest_container():
             check_and_clean(threshold)
